@@ -1,3 +1,15 @@
+/* 
+ > To Support More Style of Timer    
+ > Author: Claud     
+ > Date: Nov 2018    
+
+## Format Like "1h20m" or "20m30s" and etc.
+- No space or other characters, just ?h?m?s, and 'h', 'm', 's' can be in any orders, and they must be in Int
+
+
+*/
+
+
 // configurations
 var audioList = [
   {
@@ -14,11 +26,38 @@ resetTimers();
 loadAudios();
 
 function parseTime(str) {
+
   var num = parseFloat(str);
   if (isNaN(num))
     return null;
+
+  var hn =0;
+  var mn =0;
+  var sn =60;
+
+  var regExp = /(\d+)h/;
+  var matches = regExp.exec(str);
+  if(matches!=null)
+    hn = parseInt(matches[1]);
+    
+  regExp = /(\d+)m/;
+  matches = regExp.exec(str);
+  if(matches!=null)
+    mn = parseInt(matches[1]);
+ 
+  regExp = /(\d+)s/;
+  matches = regExp.exec(str);
+  if(matches!=null)
+    sn = parseInt(matches[1]);
+ 
+
+  var totalseconds;
+  totalseconds = hn*3600 + mn*60 + sn;
+  console.log("total: " + totalseconds);
+  return totalseconds;
+   
+/*
   var last = str.charAt(str.length - 1);
-  var mul;
   switch (last) {
   case 'h': mul = 60 * 60; break;
   case 'm': mul = 60; break;
@@ -26,6 +65,8 @@ function parseTime(str) {
   default: mul = 60; break;
   }
   return num * mul;
+*/
+
 }
 
 function setupNotification(timer) {
@@ -44,7 +85,7 @@ function setupNotification(timer) {
   setTimeout(function() {
     var notification = new window.Notification(title, {
       tag: id,
-      icon: "48.png",
+      icon: "256.png",
       body: timer.desc
     });
     notification.addEventListener('click', function(e) {
