@@ -1,26 +1,26 @@
 {
   "manifest_version": 2,
 
-  "name": "Omnibox Timer",
-  "description": "A simple timer built for Chrome",
-  "version": "0.5.0",
+  "name": "Omnibox Timer Again",
+  "description": "A simple timer built for Chrome, Based on Omnibox Timer",
+  "version": "0.1.0",
 
   "omnibox": {
-    "keyword": "tm"
+    "keyword": "tma"
   },
 
   "icons": {
-    "16": "16.png",
-    "48": "48.png",
-    "128": "128.png"
+    "16": "256.png",
+    "48": "256.png",
+    "256": "256.png"
   },
 
   "browser_action": {
     "default_icon": {
-      "19": "19.png",
-      "38": "38.png"
+      "19": "256.png",
+      "38": "256.png"
     },
-    "default_title": "Omnibox Timer"
+    "default_title": "Omnibox Timer Again"
   },
 
   "background": {
@@ -39,6 +39,6 @@
   ],
 
   "web_accessible_resources": [
-    "48.png"
+    "256.png"
   ]
 }
