@@ -1,16 +1,17 @@
-// Store history
-var history = History()
+// Store thistory
+var thistory = timerHistory();
 resetDefaultSuggestion();
 
 chrome.omnibox.onInputEntered.addListener(function(text){
+  console.log(thistory);
   if (text == "options" || text == "show") {
     openOptionsPage();
   } else {
     var result = tryToSetupTimer(text);
 
-    // Store history when a timer is set
+    // Store thistory when a timer is set
     if (result) {
-      history.add(text);
+      thistory.add(text);
     }
   }
 });
@@ -40,9 +41,9 @@ chrome.omnibox.onInputChanged.addListener(function(text, suggest) {
   chrome.storage.local.get({historySuggestionType: "time"}, function(object) {
     var suggestions = [];
     if (object.historySuggestionType === "time") {
-      var founds = history.findByTime(text);
+      var founds = thistory.findByTime(text);
     } else {
-      var founds = history.findByCount(text);
+      var founds = thistory.findByCount(text);
     }
     for (var i = 0; i < founds.length; i++) {
       var found = founds[i];

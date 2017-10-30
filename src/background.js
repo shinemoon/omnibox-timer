@@ -177,7 +177,7 @@ function giveFeedback(message) {
   }, 3000);
 }
 
-function History() {
+function timerHistory() {
   // Store history
   var sortedByTime = [];
   var sortedByCount = [];
