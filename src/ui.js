@@ -7,13 +7,19 @@ $(function() {
   }, function(object) {
     for (var i = 0; i < object.timers.length; i++) {
       var timer = object.timers[i];
+      console.log(timer);
       notificationTime = timer.currentTime + timer.seconds * 1000;
       $("#timers > tbody:last").append(
         "<tr><td>" + timer.desc + "</td>"
         + "<td>" + moment(timer.currentTime).calendar() + "</td>"
         + "<td>" + moment(notificationTime).calendar() + " (" + moment(notificationTime).fromNow() + ")</td>"
+        + "<td class='remove-button'>" + timer.tid+"</td>"
         + "</tr>");
     }
+
+    $('.remove-button').click(function(){
+        alert("To Remove");
+    });
 
     $("#stats").append("<li># of timers you created: " + object.idCounter + "</li>");
 

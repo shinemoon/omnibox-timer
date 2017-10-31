@@ -9,3 +9,8 @@ th {
 img {
   vertical-align:bottom;
 }
+
+td.remove-button {
+    cursor:pointer;
+    color:pink;
+}

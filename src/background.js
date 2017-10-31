@@ -10,6 +10,10 @@
 */
 
 
+
+
+
+
 // configurations
 var audioList = [
   {
@@ -34,6 +38,7 @@ function parseTime(str) {
   var hn =0;
   var mn =0;
   var sn =60;
+  var abstime = 0;
 
   var regExp = /(\d+)h/;
   var matches = regExp.exec(str);
@@ -50,10 +55,25 @@ function parseTime(str) {
   if(matches!=null)
     sn = parseInt(matches[1]);
  
+  regExp = /(\d+):(\d+)/;
+  matches = regExp.exec(str);
+  if(matches!=null)
+    hn = parseInt(matches[1])%24;
+    mn = parseInt(matches[2])%60;
+    var totalm = hn*60+mn;
+    //to get current time
+    var myDate = new Date();
+    curh = myDate.getHours();
+    curm = myDate.getMinutes();
+    var ctotalm = curh*60+curm;
+    var deltm = totalm - ctotalm;
+
+    if(deltm<=0) return null;
+    // Return direct value 
+    return deltm*60;
 
   var totalseconds;
   totalseconds = hn*3600 + mn*60 + sn;
-  console.log("total: " + totalseconds);
   return totalseconds;
    
 /*
@@ -82,7 +102,7 @@ function setupNotification(timer) {
   console.log(id + ": setup " + timer.seconds + " seconds from "
               + timer.currentTime);
 
-  setTimeout(function() {
+  var ctimerid = setTimeout(function() {
     var notification = new window.Notification(title, {
       tag: id,
       icon: "256.png",
@@ -102,7 +122,11 @@ function setupNotification(timer) {
       }
     });
     console.log(id + ": notified at " + new Date().toString());
+
+    // To Update the timer info in local storage
+
   }, ms);
+  return ctimerid;
 }
 
 function tryToSetupTimer(text) {
@@ -127,7 +151,10 @@ function tryToSetupTimer(text) {
   };
 
   setupTimer(timer, function(timer) {
-    setupNotification(timer);
+    var cid = setupNotification(timer);
+    //Timer Id used for delete and cancellation
+    timer['tid']= cid;
+    timer['status']= "ongoing";
     storeTimer(timer);
     giveFeedback("add")
   });
