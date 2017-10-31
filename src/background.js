@@ -7,6 +7,11 @@
 - No space or other characters, just ?h?m?s, and 'h', 'm', 's' can be in any orders, and they must be in Int
 
 
+## Format Like "20:02 Go Home" 
+- Must in 24 hour way
+- Can't be equal to or earliery than current time
+
+
 */
 
 
