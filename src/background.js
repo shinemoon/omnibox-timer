@@ -15,7 +15,8 @@
 */
 
 
-
+var timercount = 0;
+chrome.browserAction.setBadgeText({text: String(timercount)});
 
 
 
@@ -62,7 +63,8 @@ function parseTime(str) {
  
   regExp = /(\d+):(\d+)/;
   matches = regExp.exec(str);
-  if(matches!=null)
+  console.log(matches);
+  if(matches!=null) {
     hn = parseInt(matches[1])%24;
     mn = parseInt(matches[2])%60;
     var totalm = hn*60+mn;
@@ -76,6 +78,7 @@ function parseTime(str) {
     if(deltm<=0) return null;
     // Return direct value 
     return deltm*60;
+  }
 
   var totalseconds;
   totalseconds = hn*3600 + mn*60 + sn;
@@ -127,7 +130,8 @@ function setupNotification(timer) {
       }
     });
     console.log(id + ": notified at " + new Date().toString());
-
+    timercount=timercount-1;
+    chrome.browserAction.setBadgeText({text: String(timercount)});
     // To Update the timer info in local storage
 
   }, ms);
@@ -161,6 +165,7 @@ function tryToSetupTimer(text) {
     timer['tid']= cid;
     timer['status']= "ongoing";
     storeTimer(timer);
+    timercount=timercount+1;
     giveFeedback("add")
   });
 
@@ -204,8 +209,10 @@ function loadAudios() {
 
 function giveFeedback(message) {
   chrome.browserAction.setBadgeText({text: message});
+  // Modify a bit for using available items in local storage
   setTimeout(function() {
-    chrome.browserAction.setBadgeText({text: ""});
+    //chrome.browserAction.setBadgeText({text: ""});
+    chrome.browserAction.setBadgeText({text: String(timercount)});
   }, 3000);
 }
 
