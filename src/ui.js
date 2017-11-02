@@ -13,12 +13,17 @@ $(function() {
         "<tr><td>" + timer.desc + "</td>"
         + "<td>" + moment(timer.currentTime).calendar() + "</td>"
         + "<td>" + moment(notificationTime).calendar() + " (" + moment(notificationTime).fromNow() + ")</td>"
-        + "<td class='remove-button'>" + timer.tid+"</td>"
+        + "<td toid='"+timer.tid+"' class='remove-button'> Delete </td>"
         + "</tr>");
+        if(timer.status=="ongoing") $('tr').last().addClass("ongoing");
     }
 
     $('.remove-button').click(function(){
-        alert("To Remove");
+        if(confirm("To Cancel " + $(this).attr('toid') + " Timer? " )){
+           console.log("Cancelled");
+           clearTimeout(parseInt($(this).attr('toid'))) ;
+           $(this).parent().removeClass("ongoing");
+        }
     });
 
     $("#stats").append("<li># of timers you created: " + object.idCounter + "</li>");
