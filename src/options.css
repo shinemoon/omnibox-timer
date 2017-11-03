@@ -68,3 +68,7 @@ tr.ongoing {
     color:brown;
     font-size:16px;
 }
+
+li {
+    margin-top:10px;
+}
