@@ -1,11 +1,15 @@
 $(function() {
+  //Get background
+  //
+  var root = chrome.extension.getBackgroundPage();
+
   chrome.storage.local.get({
     timers: [],
     idCounter: 0,
     soundType: "tts",
     historySuggestionType: "time"
   }, function(object) {
-    for (var i = 0; i < object.timers.length; i++) {
+    for (var i = 0; i < Math.min(object.timers.length,10) ; i++) {
       var timer = object.timers[i];
       console.log(timer);
       notificationTime = timer.currentTime + timer.seconds * 1000;
@@ -13,16 +17,38 @@ $(function() {
         "<tr><td>" + timer.desc + "</td>"
         + "<td>" + moment(timer.currentTime).calendar() + "</td>"
         + "<td>" + moment(notificationTime).calendar() + " (" + moment(notificationTime).fromNow() + ")</td>"
-        + "<td toid='"+timer.tid+"' class='remove-button'> Delete </td>"
+        + "<td toid='"+timer.tid+"' class='remove-button "+ timer.status + "'> "+timer.status+"</td>"
         + "</tr>");
-        if(timer.status=="ongoing") $('tr').last().addClass("ongoing");
+        $('tr').last().addClass(timer.status);
+        if(timer.status=='ongoing'){
+            $(".remove-button").text("Cancel");
+        }
     }
 
     $('.remove-button').click(function(){
-        if(confirm("To Cancel " + $(this).attr('toid') + " Timer? " )){
+        if($(this).parent().hasClass('ongoing')) {
+            //  
+        } else {
+            return;
+        }
+        if(confirm("To Cancel Timer? " )){
            console.log("Cancelled");
-           clearTimeout(parseInt($(this).attr('toid'))) ;
-           $(this).parent().removeClass("ongoing");
+           var curi = parseInt($(this).attr('toid'));
+           root.clearTimeout(curi) ;
+           $(this).parent().removeClass("ongoing").addClass('cancelled');
+           //Rewrite the timer
+           chrome.storage.local.get({timers: []}, function(object) {
+                timers = object.timers;
+                //Locate the index
+                for(var i =0; i< timers.length; i++) {
+                    if(parseInt(timers[i].tid)== curi){
+                        timers[i].status="cancelled";
+                    }
+                }
+                chrome.storage.local.set({timers: timers});
+                //Refresh Page
+                location.reload();
+           });
         }
     });
 
@@ -63,6 +89,27 @@ $(function() {
       chrome.storage.local.set({historySuggestionType: "count"});
       showSaveMessage();
     });
+
+    $('#clear-button').click(function(){
+        if(confirm("Sure to stop all timers?")){
+           //Rewrite the timer
+           chrome.storage.local.get({timers: []}, function(object) {
+                timers = object.timers;
+                //Locate the index
+                for(var i =0; i< timers.length; i++) {
+                    timers[i].status="cancelled";
+                    root.clearTimeout(parseInt(timers[i].tid));
+                }
+                root.timercount = 0
+                //chrome.storage.local.set({timers: timers});
+                chrome.storage.local.set({timers: []});
+                //Refresh Page
+                location.reload();
+           });
+        }
+    });
+
+
 
   });
 });

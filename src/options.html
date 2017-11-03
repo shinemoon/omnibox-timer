@@ -10,15 +10,37 @@
 </head>
 
 <body>
-<h1><img src="256.png"/> Omnibox Timer</h1>
+<img class='title' src="256.png"/> 
+<h1>Omnibox Timer Again</h1>
+
+<h2>How to Use</h2>
+<p>
+<ol>
+<li>Focus in the address bar;</li>
+<li>Type 'ta' and hit space key, then you will see it invokes extension prompt for further input;</li>
+<li>Use syntax like below example to define the reminders for timer; 
+<ul>
+<li><b>"[Number]s|m|h [Reminder Description]'</b>(e.g. "10m Have Dinner") , or </li>
+<li><b>"hh:mm [Reminder Description]" </b> (e.g. "20:20 Go Home") </li>
+</ul>
+</li>
+<li>Reminder will pop up by defined time;</li>
+<li>Options and Timers can be managed via this page.</li>
+</ol>
+
+</p>
+
+
+
 <h2>Current timers</h2>
-<p>Sorted by creation time. Please refresh this page if you created more timers.</p>
+<p>Sorted by creation time. Please refresh this page if you created more timers. Or Click <span id='clear-button'>Cancel All</span> to stop all ongoing timers.</p>
 <table id="timers">
 <tbody>
 <tr>
   <th>Description</th>
   <th>Creation time</th>
   <th>Notification time</th>
+  <th>Operation </th>
 </tr>
 </tbody>
 </table>
@@ -29,7 +51,8 @@
 <h2>Options</h2>
 
 <div>
-<p>Sound:
+<p class='opt-label'> Sound:</p>
+<p>
 <input type="radio" name="soundType" value="tts" id="tts">
 <label for="tts">TTS (Text To Speech)</label>
 <input type="radio" name="soundType" value="bell" id="bell">
@@ -40,7 +63,8 @@
 </div>
 
 <div>
-<p>How to suggest timer texts:
+<p class='opt-label'>How to suggest timer texts:</p>
+<p>
 <input type="radio" name="historySuggestionType" value="time" id="time">
 <label for="time">Suggest most recently used timer text first</label>
 <input type="radio" name="historySuggestionType" value="count" id="count">

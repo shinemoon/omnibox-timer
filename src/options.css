@@ -1,16 +1,70 @@
-table, th, td {
-  border: 1px solid black;
+body {
+    width:640px;
+    margin-left:auto;
+    margin-right:auto;
+    font-size:14px;
 }
 
-th {
-  width: 280px;
+img.title {
+    width:32px;
+    height;auto;
+    float:left;
+    padding-right:10px;
+    padding-left:10px;
 }
 
-img {
-  vertical-align:bottom;
+h1 {
+    font-size:22px;
 }
 
-td.remove-button {
+
+h2 {
+    background: rgba(10,10,10,0.6);
+    font-size:16px!important;
+    padding:5px;
+    padding-left:20px;
+    color:white;
+    font-weight:normal;
+    box-shadow:1px 1px 5px grey;
+}
+
+table {
+    width:90%;
+}
+
+td {
+    text-align:center;
+}
+
+tr {
+    background: rgba(220,220,220,0.3);
+}
+
+tr:nth-child(1) {
+    background: lightgray;
+}
+
+tr.ongoing td.remove-button {
+    background:pink;
     cursor:pointer;
-    color:pink;
+}
+tr.ongoing td.remove-button:hover {
+    opacity:0.8;
+}
+
+tr.ongoing {
+    background:rgba(0,200,0,0.2);
+}
+
+#clear-button {
+    color:brown;
+    background:rgba(200,200,200,0.8);
+    padding-left:5px;
+    padding-right:5px;
+    cursor:pointer;
+}
+
+.opt-label{
+    color:brown;
+    font-size:16px;
 }

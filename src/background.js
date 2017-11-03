@@ -133,6 +133,19 @@ function setupNotification(timer) {
     timercount=timercount-1;
     chrome.browserAction.setBadgeText({text: String(timercount)});
     // To Update the timer info in local storage
+    //Rewrite the timer
+    console.log(ctimerid);
+        chrome.storage.local.get({timers: []}, function(object) {
+            timers = object.timers;
+            //Locate the index
+            for(var i =0; i< timers.length; i++) {
+                console.log(timers[i].tid);
+                if(parseInt(timers[i].tid)== ctimerid){
+                        timers[i].status="done";
+                    }
+                }
+                chrome.storage.local.set({timers: timers});
+        });
 
   }, ms);
   return ctimerid;
