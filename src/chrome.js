@@ -20,31 +20,8 @@ function updateDefaultSuggestion(text) {
   if (text.trim() === "") {
     resetDefaultSuggestion();
   } else {
-
-    var arr = text.split(/\s+/);
-    var seconds = parseTime(arr.shift());
-    if (!seconds) {
-      console.log("parse error: " + text);
-      giveFeedback("err");
-    }
-
-    if (arr.length > 0) {
-      desc = arr.join(" ");
-    } else {
-      desc = 'Timer done!';
-    }
-
-    var timer = {
-      currentTime: (new Date()).getTime(),
-      desc: desc,
-      seconds: seconds,
-      popup: 0
-    };
-
-    var notificationTime = timer.currentTime + timer.seconds * 1000;
-
     chrome.omnibox.setDefaultSuggestion({
-      description: 'Timer set: <match>' + text + '</match> | &lt;time&gt; [&lt;message&gt;] | ' + 'Will alert in ' + moment(notificationTime).calendar()
+      description: 'Timer set: <match>' + text + '</match> | &lt;time&gt; [&lt;message&gt;]'
     });
   }
 }
