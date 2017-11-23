@@ -299,3 +299,19 @@ function timerHistory() {
     }
   }
 }
+
+function clearAllNotifications() {
+  //Rewrite the timer
+  chrome.storage.local.get({timers: []}, function(object) {
+    timers = object.timers;
+    //Locate the index
+    for(var i =0; i< timers.length; i++) {
+      timers[i].status="cancelled";
+      root.clearTimeout(parseInt(timers[i].tid));
+    }
+    root.timercount = 0
+      //chrome.storage.local.set({timers: timers});
+      chrome.storage.local.set({timers: []});
+  });
+}
+
