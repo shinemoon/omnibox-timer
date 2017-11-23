@@ -300,6 +300,8 @@ function timerHistory() {
   }
 }
 
+var root = chrome.extension.getBackgroundPage();
+
 function clearAllNotifications() {
   //Rewrite the timer
   chrome.storage.local.get({timers: []}, function(object) {
