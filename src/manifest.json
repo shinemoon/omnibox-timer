@@ -26,6 +26,7 @@
 
   "background": {
     "scripts": [
+      "moment.js",
       "background.js",
       "chrome.js"
     ]
