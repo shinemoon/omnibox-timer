@@ -2,8 +2,8 @@
   "manifest_version": 2,
 
   "name": "Omnibox Timer Again",
-  "description": "A simple timer built for Chrome, Based on Omnibox Timer",
-  "version": "0.5.2",
+  "description": "A simple timer built for Edge Browser, Based on Omnibox Timer",
+  "version": "0.6",
   "short_name":"OTA", 
 
   "omnibox": {
