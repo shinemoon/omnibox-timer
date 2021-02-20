@@ -7,6 +7,7 @@ $(function() {
     timers: [],
     idCounter: 0,
     soundType: "tts",
+    notitype: "chromenoti",
     historySuggestionType: "time"
   }, function(object) {
     for (var i = 0; i < Math.min(object.timers.length,10) ; i++) {
@@ -27,7 +28,6 @@ $(function() {
 
     $('.remove-button').click(function(){
         if($(this).parent().hasClass('ongoing')) {
-            //  
         } else {
             return;
         }
@@ -39,13 +39,26 @@ $(function() {
            //Rewrite the timer
            chrome.storage.local.get({timers: []}, function(object) {
                 timers = object.timers;
-                //Locate the index
-                for(var i =0; i< timers.length; i++) {
-                    if(parseInt(timers[i].tid)== curi){
-                        timers[i].status="cancelled";
-                    }
+               // To destroy SNOOZED ones:
+               try {
+                    chrome.notifications.update(""+curi, {requireInteraction:false}, function(){
+                        chrome.notifications.clear(""+curi, function(cleared){
+                            //if(cleared){
+                                //Locate the index
+                                for(var i =0; i< timers.length; i++) {
+                                    if(parseInt(timers[i].tid)== curi){
+                                        timers[i].status="cancelled";
+                                    }
+                                }
+                                chrome.storage.local.set({timers: timers});
+                                root.timercount = root.timercount - 1;
+                                chrome.browserAction.setBadgeText({text: String(root.timercount)});
+                            //};
+                        });
+                    });
+                } catch (error) {
+                    console.error(error);
                 }
-                chrome.storage.local.set({timers: timers});
                 //Refresh Page
                 location.reload();
            });
@@ -53,6 +66,26 @@ $(function() {
     });
 
     $("#stats").append("<li># of timers you created: " + object.idCounter + "</li>");
+
+    if (object.notitype== "windownoti") {
+      $("input#windownoti").attr("checked", true);
+    } else if(object.notitype== "chromenoti") {
+      $("input#chromenoti").attr("checked", true);
+    } else {
+      $("input#chromenoti").attr("checked", true);
+    }
+
+    $("input#windownoti").change(function() {
+      chrome.storage.local.set({notitype: "windownoti"});
+      showSaveMessage();
+    });
+    $("input#chromenoti").change(function() {
+      chrome.storage.local.set({notitype: "chromenoti"});
+      showSaveMessage();
+    });
+
+
+
 
     if (object.soundType == "tts") {
       $("input#tts").attr("checked", true);
@@ -97,12 +130,15 @@ $(function() {
                 timers = object.timers;
                 //Locate the index
                 for(var i =0; i< timers.length; i++) {
-                    timers[i].status="cancelled";
-                    root.clearTimeout(parseInt(timers[i].tid));
+                    chrome.notifications.clear(""+timers[i].tid, function(cleared){
+                        timers[i].status="cancelled";
+                        root.clearTimeout(parseInt(timers[i].tid));
+                    });
                 }
                 root.timercount = 0
                 //chrome.storage.local.set({timers: timers});
                 chrome.storage.local.set({timers: []});
+                chrome.browserAction.setBadgeText({text: String(root.timercount)});
                 //Refresh Page
                 location.reload();
            });
@@ -116,7 +152,7 @@ $(function() {
 
 function showSaveMessage() {
   $("#flash").show();
-  $("#flash").html("Saved");
+  $("#flash").html("Option Saved");
   setTimeout(function() {
     $("#flash").fadeOut("slow");
   }, 1000);

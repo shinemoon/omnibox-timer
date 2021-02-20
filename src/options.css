@@ -72,3 +72,14 @@ tr.ongoing {
 li {
     margin-top:10px;
 }
+
+#flash{
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    background: lightgreen;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 3px;
+    color: #888;
+}

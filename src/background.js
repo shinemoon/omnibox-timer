@@ -28,7 +28,6 @@ var audioList = [
   }
 ];
 var audios = {};
-
 // Reset timers when Chrome starts
 resetTimers();
 
@@ -111,42 +110,90 @@ function setupNotification(timer) {
               + timer.currentTime);
 
   var ctimerid = setTimeout(function() {
-    var notification = new window.Notification(title, {
-      tag: id,
-      icon: "256.png",
-      body: timer.desc
-    });
-    notification.addEventListener('click', function(e) {
-      if (e && e.target && e.target.close) {
-        e.target.close();
-      }
-      console.log(id + ": closed at " + new Date().toString());
-    });
-    chrome.storage.local.get({soundType: "tts", soundId: "ring"}, function(object) {
-      if (object.soundType == "tts") {
-        chrome.tts.speak(timer.desc);
-      } else if (object.soundType == "bell") {
-        audios[object.soundId].play();
-      }
-    });
-    console.log(id + ": notified at " + new Date().toString());
-    timercount=timercount-1;
-    chrome.browserAction.setBadgeText({text: String(timercount)});
-    // To Update the timer info in local storage
-    //Rewrite the timer
-    console.log(ctimerid);
-        chrome.storage.local.get({timers: []}, function(object) {
-            timers = object.timers;
-            //Locate the index
-            for(var i =0; i< timers.length; i++) {
-                console.log(timers[i].tid);
-                if(parseInt(timers[i].tid)== ctimerid){
-                        timers[i].status="done";
-                    }
-                }
-                chrome.storage.local.set({timers: timers});
-        });
+    // Window.Notification Approaching
+    var notification = null;
+    var cfg = {soundType:"tts", soundId:"ring", notitype:"chromenoti"};
 
+    var notifyContent = {
+        type:"basic",
+        iconUrl:"256.png",
+        message:timer.desc,
+        contextMessage:'',
+        requireInteraction:true,
+        buttons:[{title:'Snooze (5 min later)'}],
+        title:"Timer Done"
+    };
+
+    function updateContent(object){
+        var rst = Object.assign({}, object);
+        // + Snooze time
+        return rst;
+    }
+    //Load Config
+    //
+    chrome.storage.local.get({soundType: "tts", soundId: "ring", notitype:"chromenoti"}, function(object) {
+        cfg.soundType = object.soundType;
+        cfg.soundId= object.soundId;
+        cfg.notitype= object.notitype;
+        console.log(cfg);
+        if(cfg.notitype == "windownoti") {
+            notification = new window.Notification(title, {
+              tag: id,
+              icon: "256.png",
+              requireInteraction: true,
+              body: timer.desc
+            });
+            notification.addEventListener('click', function(e) {
+              if (e && e.target && e.target.close) {
+                e.target.close();
+              }
+              console.log(id + ": closed at " + new Date().toString());
+           });
+        } else {
+            //Chrome Notification:
+            //need one randstr as ID
+            var rid = ""+ctimerid ;
+            chrome.notifications.create(rid, notifyContent, function(rid){
+                console.log(rid);
+                //SNOOZE
+                chrome.notifications.onButtonClicked.addListener(function(notificationId, buttonIndex){
+                    //Reset in five mins
+                    setTimeout(function(){
+                        chrome.notifications.update(notificationId, notifyContent, function(){
+                            //The Listener automatically bind with existed notiID
+                        });
+                    }, 3*1000);
+                });
+
+                //DONE
+                chrome.notifications.onClicked.addListener(function(notificationId){
+                    timercount=timercount-1;
+                    chrome.browserAction.setBadgeText({text: String(timercount)});
+                    // To Update the timer info in local storage
+                    //Rewrite the timer
+                    console.log(ctimerid);
+                    chrome.storage.local.get({timers: []}, function(object) {
+                        timers = object.timers;
+                        //Locate the index
+                        for(var i =0; i< timers.length; i++) {
+                            if(parseInt(timers[i].tid)== ctimerid){
+                                timers[i].status="done";
+                            }
+                        }
+                        chrome.storage.local.set({timers: timers});
+                   });
+                });
+            });
+        }
+
+        if (cfg.soundType == "tts") {
+            chrome.tts.speak(timer.desc);
+        } else if (cfg.soundType == "bell") {
+            audios[cfg.soundId].play();
+        }
+        console.log(id + ": notified at " + new Date().toString());
+    
+  }) //config get done
   }, ms);
   return ctimerid;
 }
