@@ -106,6 +106,7 @@ function setupNotification(timer) {
   var ms = timer.seconds * 1000;
   var title = 'Timer done!';
 
+
   console.log(id + ": setup " + timer.seconds + " seconds from "
               + timer.currentTime);
 
@@ -118,17 +119,12 @@ function setupNotification(timer) {
         type:"basic",
         iconUrl:"256.png",
         message:timer.desc,
-        contextMessage:'',
+        contextMessage: moment(timer.notificationTime).calendar(),
         requireInteraction:true,
         buttons:[{title:'Snooze (5 min later)'}],
         title:"Timer Done"
     };
 
-    function updateContent(object){
-        var rst = Object.assign({}, object);
-        // + Snooze time
-        return rst;
-    }
     //Load Config
     //
     chrome.storage.local.get({soundType: "tts", soundId: "ring", notitype:"chromenoti"}, function(object) {
@@ -167,7 +163,6 @@ function setupNotification(timer) {
 
                 //DONE
                 chrome.notifications.onClicked.addListener(function(notificationId){
-                    timercount=timercount-1;
                     chrome.browserAction.setBadgeText({text: String(timercount)});
                     // To Update the timer info in local storage
                     //Rewrite the timer
@@ -178,6 +173,7 @@ function setupNotification(timer) {
                         for(var i =0; i< timers.length; i++) {
                             if(parseInt(timers[i].tid)== ctimerid){
                                 timers[i].status="done";
+                                timercount=timercount-1;
                             }
                         }
                         chrome.storage.local.set({timers: timers});
@@ -216,7 +212,8 @@ function tryToSetupTimer(text) {
   var timer = {
     currentTime: (new Date()).getTime(),
     desc: desc,
-    seconds: seconds
+    seconds: seconds,
+    notificationTime : (new Date()).getTime() + seconds * 1000 
   };
 
   setupTimer(timer, function(timer) {
@@ -227,6 +224,16 @@ function tryToSetupTimer(text) {
     storeTimer(timer);
     timercount=timercount+1;
     giveFeedback("add")
+    //Notify
+    var notifyContent = {
+        type:"basic",
+        iconUrl:"256.png",
+        message:timer.desc,
+        contextMessage: moment(timer.notificationTime).calendar(),
+        title:"Created"
+    };
+    chrome.notifications.create(notifyContent, function(rid){
+    });
   });
 
   return true;

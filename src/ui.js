@@ -13,11 +13,10 @@ $(function() {
     for (var i = 0; i < Math.min(object.timers.length,10) ; i++) {
       var timer = object.timers[i];
       console.log(timer);
-      notificationTime = timer.currentTime + timer.seconds * 1000;
       $("#timers > tbody:last").append(
         "<tr><td>" + timer.desc + "</td>"
         + "<td>" + moment(timer.currentTime).calendar() + "</td>"
-        + "<td>" + moment(notificationTime).calendar() + " (" + moment(notificationTime).fromNow() + ")</td>"
+        + "<td>" + moment(timer.notificationTime).calendar() + " (" + moment(timer.notificationTime).fromNow() + ")</td>"
         + "<td toid='"+timer.tid+"' class='remove-button "+ timer.status + "'> "+timer.status+"</td>"
         + "</tr>");
         $('tr').last().addClass(timer.status);
@@ -48,10 +47,10 @@ $(function() {
                                 for(var i =0; i< timers.length; i++) {
                                     if(parseInt(timers[i].tid)== curi){
                                         timers[i].status="cancelled";
+                                        root.timercount = root.timercount - 1;
                                     }
                                 }
                                 chrome.storage.local.set({timers: timers});
-                                root.timercount = root.timercount - 1;
                                 chrome.browserAction.setBadgeText({text: String(root.timercount)});
                             //};
                         });
