@@ -3,7 +3,7 @@
 
   "name": "Omnibox Timer Again",
   "description": "A simple timer built for Edge Browser, Based on Omnibox Timer",
-  "version": "0.7",
+  "version": "0.71",
   "short_name":"OTA", 
 
   "omnibox": {

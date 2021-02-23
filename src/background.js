@@ -158,7 +158,7 @@ function setupNotification(timer) {
                         chrome.notifications.update(notificationId, notifyContent, function(){
                             //The Listener automatically bind with existed notiID
                         });
-                    }, 3*1000);
+                    }, 5*60*1000);
                 });
 
                 //DONE
