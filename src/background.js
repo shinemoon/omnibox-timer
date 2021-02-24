@@ -153,12 +153,14 @@ function setupNotification(timer) {
                 console.log(rid);
                 //SNOOZE
                 chrome.notifications.onButtonClicked.addListener(function(notificationId, buttonIndex){
-                    //Reset in five mins
-                    setTimeout(function(){
-                        chrome.notifications.update(notificationId, notifyContent, function(){
-                            //The Listener automatically bind with existed notiID
-                        });
-                    }, 5*60*1000);
+                    chrome.notifications.clear(notificationId, function(){
+                        //Reset in five mins
+                        setTimeout(function(){
+                            chrome.notifications.create(notificationId, notifyContent, function(){
+                                //The Listener automatically bind with existed notiID
+                            });
+                        }, 5*60*1000);
+                    });
                 });
 
                 //DONE
