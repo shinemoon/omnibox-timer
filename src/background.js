@@ -165,6 +165,9 @@ function setupNotification(timer) {
 
                 //DONE
                 chrome.notifications.onClicked.addListener(function(notificationId){
+                    // Close current window
+                    chrome.notifications.clear(notificationId, function(){});
+
                     chrome.browserAction.setBadgeText({text: String(timercount)});
                     // To Update the timer info in local storage
                     //Rewrite the timer
@@ -235,6 +238,10 @@ function tryToSetupTimer(text) {
         title:"Created"
     };
     chrome.notifications.create(notifyContent, function(rid){
+        chrome.notifications.onClicked.addListener(function(notificationId){
+            // Close current window
+            chrome.notifications.clear(notificationId, function(){});
+        });
     });
   });
 
